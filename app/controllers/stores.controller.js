@@ -37,7 +37,7 @@ exports.createstore = (req, res) => {
 
 // Retrieve all Stores from the database.
 exports.findAllstores = (req, res) => {
-    const name = req.query.name;
+    // const name = req.query.name;
     // var condition = name ? {
     //     name: {
     //         $regex: new RegExp(name),
@@ -103,23 +103,25 @@ exports.enterstore = (req, res) => {
 
     const id = req.body.id;
     const numberofusers = req.body.numberofusers;
-    // console.log(req.body);
 
     Stores.findByIdAndUpdate(id, {
             $inc: {
                 'clients': parseInt(numberofusers)
             }
         }, {
-            useFindAndModify: false
+            useFindAndModify: false,
+            new: true
         })
         .then(data => {
             if (!data) {
                 res.status(404).send({
                     message: `Cannot update Stores with id=${id}. Maybe Stores was not found!`
                 });
-            } else res.send({
-                message: "Stores was updated successfully."
-            });
+            } else {
+                res.send({
+                    message: "Stores was updated successfully."
+                })
+            };
         })
         .catch(err => {
             res.status(500).send({
