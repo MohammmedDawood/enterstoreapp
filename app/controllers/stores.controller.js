@@ -1,5 +1,6 @@
 const db = require("../models");
 const Stores = db.stores;
+const Clientslogs = db.clientslogs;
 
 // Create and Save a new Store
 
@@ -110,7 +111,7 @@ exports.enterstore = (req, res) => {
             }
         }, {
             useFindAndModify: false,
-            new: true
+            new: true,
         })
         .then(data => {
             if (!data) {
@@ -121,6 +122,19 @@ exports.enterstore = (req, res) => {
                 res.send({
                     message: "Stores was updated successfully."
                 })
+
+                // createClientLog called
+
+                // edit data and add store number of added clients and status
+                data.status = true;
+                data.numberofclients = numberofusers;
+
+                //  change data type of storeid from string to objectId
+                // var mongoose = require('mongoose');
+                // data.storeId = new mongoose.mongo.ObjectId(id);
+                data.storeId = id;
+
+                createClientLog(data);
             };
         })
         .catch(err => {
@@ -155,9 +169,23 @@ exports.exitstore = (req, res) => {
                 res.status(404).send({
                     message: `Cannot update Stores with id=${id}. Maybe Stores was not found!`
                 });
-            } else res.send({
-                message: "Stores was updated successfully."
-            });
+            } else {
+                res.send({
+                    message: "Stores was updated successfully."
+                })
+                // createClientLog called
+
+                // edit data and add store number of added clients and status
+                data.status = false;
+                data.numberofclients = numberofusers;
+
+                //  change data type of storeid from string to objectId
+                // var mongoose = require('mongoose');
+                // data.storeId = new mongoose.mongo.ObjectId(id);
+                data.storeId = id;
+
+                createClientLog(data);
+            };
         })
         .catch(err => {
             res.status(500).send({
@@ -165,6 +193,47 @@ exports.exitstore = (req, res) => {
             });
         });
 };
+
+
+// createe client log in case of entering or exiting store 
+function createClientLog(enterorexitresponseobject) {
+
+
+    if (!enterorexitresponseobject) {
+        // console.log("error in createClientLog function");
+        // console.log(enterorexitresponseobject);
+        return;
+    } else {
+        console.log("createClientLog function called and worked perfectly");
+        // console.log(enterorexitresponseobject)
+
+
+
+        // Create a Clientslog
+        var clientlog = new Clientslogs({
+            name: enterorexitresponseobject.name,
+            category: enterorexitresponseobject.category,
+            numberofclients: enterorexitresponseobject.numberofclients,
+            statusInOrOut: enterorexitresponseobject.status,
+            storeId: enterorexitresponseobject.storeId
+        });
+        // console.log(clientlog)
+
+        // Save clientlog in the database
+        clientlog
+            .save(clientlog)
+            .then(logdata => {
+                console.log("clientlog saved successfully");
+                console.log(logdata);
+            })
+            .catch(err => {
+                console.log(err.message || "Some error occurred while creating the Clientlog.");
+            });
+    };
+
+}
+
+
 
 
 // // Update a Store by the id in the request
