@@ -9,13 +9,15 @@ const app = express();
 //request logger
 app.use(morgan('tiny'))
 
+app.use(cors());
+app.options('*', cors())
 
-var corsOptions = {
-    origin: "http://localhost:8081"
-};
+// var corsOptions = {
+//     origin: "http://localhost:8081"
+// };
 
-//cross Origin
-app.use(cors(corsOptions));
+// //cross Origin
+// app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
