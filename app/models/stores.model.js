@@ -31,7 +31,7 @@ const storesModel = mongoose.Schema({
     },
     allowedtoenter: {
         type: Boolean,
-        default: false
+        default: true
     }
 
 }, {
