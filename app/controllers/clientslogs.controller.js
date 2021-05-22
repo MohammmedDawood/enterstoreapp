@@ -155,7 +155,7 @@ exports.findclientslogsforstoreidandtimerange = (req, res) => {
                     _id: {
                         "date": {
                             $dateToString: {
-                                format: "%Y-%m-%d-%H",
+                                format: "%Y-%m-%d",
                                 // format: "%Y-%m-%d",
                                 date: "$createdAt"
                             }
@@ -233,7 +233,7 @@ exports.findclientslogsfortimerange = (req, res) => {
                     _id: {
                         "date": {
                             $dateToString: {
-                                format: "%Y-%m-%d-%H",
+                                format: "%Y-%m-%d",
                                 // format: "%Y-%m-%d",
                                 date: "$createdAt"
                             }
